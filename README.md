@@ -25,6 +25,12 @@ Clone the repository:
    git clone https://github.com/ShantanuGame/Agri-Connect-.git
    cd Agri-Connect-
 ```
+## live web (click 2 times for navigation)
+```  https://shantanugame.github.io/Agri-Connect-/ ```
+
+
+
+
 
 ## 🚀 Live-web
 
