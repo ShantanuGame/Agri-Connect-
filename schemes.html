@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Schemes - AgriConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#16a34a',
+                        'primary-dark': '#15803d',
+                        'accent': '#f59e0b',
+                        'light-green': '#dcfce7'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-green-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <button onclick="goBack()" class="text-primary hover:text-primary-dark transition-colors p-2 rounded-lg hover:bg-green-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white text-xl">
+                            📋
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-800">Government Schemes</h1>
+                            <p class="text-sm text-gray-600">Agricultural Support Programs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-600">
+                        <span id="visibleSchemes">12</span> schemes available
+                    </div>
+                    <button onclick="toggleBookmarks()" class="text-gray-600 hover:text-yellow-600 transition-colors p-2 rounded-lg hover:bg-yellow-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto p-4">
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 text-center">
+                <div class="text-3xl font-bold text-primary mb-2">12</div>
+                <div class="text-sm text-gray-600">Total Schemes</div>
+            </div>
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 text-center">
+                <div class="text-3xl font-bold text-green-600 mb-2">9</div>
+                <div class="text-sm text-gray-600">Active Now</div>
+            </div>
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 text-center">
+                <div class="text-3xl font-bold text-blue-600 mb-2">2</div>
+                <div class="text-sm text-gray-600">New Schemes</div>
+            </div>
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 text-center">
+                <div class="text-3xl font-bold text-yellow-600 mb-2">₹45.2Cr</div>
+                <div class="text-sm text-gray-600">Total Benefits</div>
+            </div>
+        </div>
+
+        <!-- Advanced Filters -->
+        <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <span class="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                    Filter & Search Schemes
+                </h3>
+                <button onclick="clearAllFilters()" class="text-sm text-gray-600 hover:text-red-600 transition-colors px-3 py-1 rounded-lg hover:bg-red-50">
+                    Clear All Filters
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search Schemes</label>
+                    <input 
+                        type="text" 
+                        id="searchFilter" 
+                        placeholder="Search by name, benefit..." 
+                        onkeyup="filterSchemes()"
+                        class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    >
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select id="categoryFilter" onchange="filterSchemes()" class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="">All Categories</option>
+                        <option value="Financial Support">Financial Support</option>
+                        <option value="Insurance">Insurance</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Training">Training</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="statusFilter" onchange="filterSchemes()" class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="New">New</option>
+                        <option value="Closing Soon">Closing Soon</option>
+                        <option value="Coming Soon">Coming Soon</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Benefit Type</label>
+                    <select id="benefitFilter" onchange="filterSchemes()" class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="">All Benefits</option>
+                        <option value="Direct Cash">Direct Cash</option>
+                        <option value="Subsidy">Subsidy</option>
+                        <option value="Insurance">Insurance</option>
+                        <option value="Free Service">Free Service</option>
+                        <option value="Credit">Credit</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Eligibility</label>
+                    <select id="eligibilityFilter" onchange="filterSchemes()" class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="">All Farmers</option>
+                        <option value="Small Farmers">Small Farmers</option>
+                        <option value="All Farmers">All Farmers</option>
+                        <option value="Women Farmers">Women Farmers</option>
+                        <option value="Young Farmers">Young Farmers</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schemes Grid -->
+        <div id="schemesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- PM-KISAN Scheme -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Financial Support" data-status="Active" data-benefit="Direct Cash" data-eligibility="All Farmers">
+                <div class="bg-gradient-to-r from-green-500 to-blue-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">PM-KISAN Direct Benefit</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                    </div>
+                    <p class="text-sm text-green-100">Direct income support to farmers</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-green-600">₹6,000</div>
+                        <div class="text-sm text-gray-600">per year</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Financial Support
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: All Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: Ongoing
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Direct income support of ₹6,000 per year to all farmer families across the country in three equal installments of ₹2,000 each.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Eligibility:</strong> All landholding farmer families. Institutional landholders and income tax payees excluded.</p>
+                        <p class="text-sm text-gray-700"><strong>Documents:</strong> Aadhaar card, Bank account details, Land records</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('PM-KISAN Direct Benefit')" class="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crop Insurance Scheme -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Insurance" data-status="Active" data-benefit="Insurance" data-eligibility="All Farmers">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">Pradhan Mantri Fasal Bima</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                    </div>
+                    <p class="text-sm text-blue-100">Comprehensive crop insurance scheme</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-blue-600">₹2 Lakh</div>
+                        <div class="text-sm text-gray-600">max coverage</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Insurance
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: All Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: 31 Dec 2024
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Provides insurance coverage and financial support to farmers in case of crop failure due to natural calamities, pests & diseases.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Premium:</strong> 2% for Kharif, 1.5% for Rabi crops, 5% for commercial/horticultural crops</p>
+                        <p class="text-sm text-gray-700"><strong>Coverage:</strong> Pre-sowing to post-harvest losses</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('Pradhan Mantri Fasal Bima')" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Soil Health Card -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Technology" data-status="Active" data-benefit="Free Service" data-eligibility="All Farmers">
+                <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">Soil Health Card Scheme</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                    </div>
+                    <p class="text-sm text-amber-100">Free soil testing and recommendations</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-amber-600">Free</div>
+                        <div class="text-sm text-gray-600">service</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Technology
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: All Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: Ongoing
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Provides soil health cards to farmers with information on nutrient status of their soil along with recommendations on appropriate dosage of nutrients.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Benefits:</strong> Soil testing every 3 years, customized fertilizer recommendations, improved crop yield</p>
+                        <p class="text-sm text-gray-700"><strong>Process:</strong> Soil sample collection → Laboratory testing → Digital card generation</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('Soil Health Card Scheme')" class="flex-1 bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- e-NAM Scheme -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Marketing" data-status="New" data-benefit="Free Service" data-eligibility="All Farmers">
+                <div class="bg-gradient-to-r from-purple-500 to-pink-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">National Agriculture Market</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">New</span>
+                    </div>
+                    <p class="text-sm text-purple-100">Online trading platform for farmers</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-purple-600">Better</div>
+                        <div class="text-sm text-gray-600">prices</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Marketing
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: All Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: Ongoing
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Pan-India electronic trading portal which networks existing APMC mandis to create a unified national market for agricultural commodities.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Benefits:</strong> Better price discovery, transparent auction process, online payment, quality assurance</p>
+                        <p class="text-sm text-gray-700"><strong>Features:</strong> 1000+ mandis connected, real-time price information, mobile app available</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('National Agriculture Market')" class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm">
+                            Register
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kisan Credit Card -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Financial Support" data-status="Active" data-benefit="Credit" data-eligibility="All Farmers">
+                <div class="bg-gradient-to-r from-indigo-500 to-blue-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">Kisan Credit Card</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                    </div>
+                    <p class="text-sm text-indigo-100">Easy credit access for farmers</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-indigo-600">₹3 Lakh</div>
+                        <div class="text-sm text-gray-600">credit limit</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Financial Support
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: All Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: Ongoing
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Credit facility for meeting the production credit needs of farmers for comprehensive agricultural activities.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Interest Rate:</strong> 7% per annum (4% with interest subvention)</p>
+                        <p class="text-sm text-gray-700"><strong>Features:</strong> Flexible repayment, insurance coverage, ATM facility</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('Kisan Credit Card')" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Organic Farming -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Training" data-status="Closing Soon" data-benefit="Subsidy" data-eligibility="All Farmers">
+                <div class="bg-gradient-to-r from-green-600 to-teal-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">Organic Farming Promotion</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Closing Soon</span>
+                    </div>
+                    <p class="text-sm text-green-100">Support for organic farming practices</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-green-600">₹50,000</div>
+                        <div class="text-sm text-gray-600">per hectare</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Training
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: All Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                            Deadline: 15 May 2024
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Financial assistance for adoption of organic farming practices including organic inputs, certification, and marketing support.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Components:</strong> Organic inputs (₹31,000/ha), certification (₹10,000/ha), marketing (₹9,000/ha)</p>
+                        <p class="text-sm text-gray-700"><strong>Duration:</strong> 3 years support for conversion period</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('Organic Farming Promotion')" class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Micro Irrigation -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Infrastructure" data-status="Active" data-benefit="Subsidy" data-eligibility="All Farmers">
+                <div class="bg-gradient-to-r from-cyan-500 to-blue-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">Micro Irrigation Scheme</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                    </div>
+                    <p class="text-sm text-cyan-100">Drip and sprinkler irrigation support</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-cyan-600">55%</div>
+                        <div class="text-sm text-gray-600">subsidy</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Infrastructure
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: All Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: 30 Jun 2024
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Financial assistance for installation of drip irrigation, sprinkler irrigation, and other water-efficient irrigation systems.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Subsidy:</strong> 55% for general farmers, 75% for SC/ST farmers, additional 10% for women farmers</p>
+                        <p class="text-sm text-gray-700"><strong>Benefits:</strong> Water saving up to 50%, increased crop yield, reduced labor cost</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('Micro Irrigation Scheme')" class="flex-1 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Women Farmer Support -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Financial Support" data-status="New" data-benefit="Direct Cash" data-eligibility="Women Farmers">
+                <div class="bg-gradient-to-r from-pink-500 to-rose-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">Women Farmer Support</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">New</span>
+                    </div>
+                    <p class="text-sm text-pink-100">Special support for women in agriculture</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-pink-600">₹1 Lakh</div>
+                        <div class="text-sm text-gray-600">grant</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Financial Support
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: Women Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: Ongoing
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Financial assistance and capacity building support for women farmers to enhance their participation in agriculture and allied activities.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Components:</strong> Equipment support, training programs, market linkage, SHG formation</p>
+                        <p class="text-sm text-gray-700"><strong>Special Benefits:</strong> Additional 10% subsidy in all schemes, priority in credit access</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('Women Farmer Support')" class="flex-1 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Digital Agriculture -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Technology" data-status="Coming Soon" data-benefit="Free Service" data-eligibility="Young Farmers">
+                <div class="bg-gradient-to-r from-violet-500 to-purple-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">Digital Agriculture Initiative</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Coming Soon</span>
+                    </div>
+                    <p class="text-sm text-violet-100">AI-powered farming solutions</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-violet-600">Free</div>
+                        <div class="text-sm text-gray-600">tech support</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Technology
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: Young Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-gray-500 rounded-full mr-2"></span>
+                            Deadline: Q3 2024
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Comprehensive digital platform providing AI-powered crop advisory, drone services, IoT sensors, and precision farming solutions.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Features:</strong> Crop monitoring, weather alerts, market intelligence, expert consultation</p>
+                        <p class="text-sm text-gray-700"><strong>Target:</strong> Tech-savvy farmers under 35 years, startup support included</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="notifyMe('Digital Agriculture Initiative')" class="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors text-sm">
+                            Notify Me
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agri-Startup Support -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Financial Support" data-status="Active" data-benefit="Credit" data-eligibility="Young Farmers">
+                <div class="bg-gradient-to-r from-emerald-500 to-teal-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">Agri-Startup Support Fund</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                    </div>
+                    <p class="text-sm text-emerald-100">Funding for agricultural startups</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-emerald-600">₹25 Lakh</div>
+                        <div class="text-sm text-gray-600">max funding</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Financial Support
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: Young Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: Rolling basis
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Financial support and mentorship for innovative agricultural startups focusing on technology, processing, and value addition.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Support:</strong> Seed funding, incubation facilities, market access, technical mentorship</p>
+                        <p class="text-sm text-gray-700"><strong>Eligibility:</strong> Age 18-35, innovative agri-business idea, graduation required</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('Agri-Startup Support Fund')" class="flex-1 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Farmer Producer Organization -->
+            <div class="scheme-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-105" 
+                 data-category="Training" data-status="Active" data-benefit="Subsidy" data-eligibility="Small Farmers">
+                <div class="bg-gradient-to-r from-orange-500 to-red-600 p-4 text-white">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg">FPO Development Scheme</h3>
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                    </div>
+                    <p class="text-sm text-orange-100">Farmer Producer Organization support</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-2xl font-bold text-orange-600">₹18 Lakh</div>
+                        <div class="text-sm text-gray-600">per FPO</div>
+                    </div>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Category: Training
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                            Eligibility: Small Farmers
+                        </div>
+                        <div class="flex items-center text-sm text-gray-600">
+                            <span class="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                            Deadline: Ongoing
+                        </div>
+                    </div>
+                    
+                    <div class="scheme-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-700 mb-2"><strong>Description:</strong> Support for formation and development of 10,000 Farmer Producer Organizations to enhance farmers' income through collective farming.</p>
+                        <p class="text-sm text-gray-700 mb-2"><strong>Support:</strong> Formation support (₹18 lakh/FPO), business development, market linkage, credit facilitation</p>
+                        <p class="text-sm text-gray-700"><strong>Benefits:</strong> Better bargaining power, reduced input costs, value addition opportunities</p>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <button onclick="toggleDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                            View Details
+                        </button>
+                        <button onclick="applyScheme('FPO Development Scheme')" class="flex-1 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm">
+                            Apply Now
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="hidden text-center py-12">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">No schemes found</h3>
+            <p class="text-gray-600 mb-4">Try adjusting your filters or search terms</p>
+            <button onclick="clearAllFilters()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">
+                Clear All Filters
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            if (confirm('Are you sure you want to leave this page?')) {
+                window.history.back();
+            }
+        }
+
+        function filterSchemes() {
+            const searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const benefitFilter = document.getElementById('benefitFilter').value;
+            const eligibilityFilter = document.getElementById('eligibilityFilter').value;
+            
+            const schemeCards = document.querySelectorAll('.scheme-card');
+            let visibleCount = 0;
+            
+            schemeCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                const category = card.dataset.category;
+                const status = card.dataset.status;
+                const benefit = card.dataset.benefit;
+                const eligibility = card.dataset.eligibility;
+                
+                const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                const matchesCategory = !categoryFilter || category === categoryFilter;
+                const matchesStatus = !statusFilter || status === statusFilter;
+                const matchesBenefit = !benefitFilter || benefit === benefitFilter;
+                const matchesEligibility = !eligibilityFilter || eligibility === eligibilityFilter;
+                
+                if (matchesSearch && matchesCategory && matchesStatus && matchesBenefit && matchesEligibility) {
+                    card.style.display = 'block';
+                    card.classList.add('animate-fade-in');
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                    card.classList.remove('animate-fade-in');
+                }
+            });
+            
+            document.getElementById('visibleSchemes').textContent = visibleCount;
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        function clearAllFilters() {
+            document.getElementById('searchFilter').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('benefitFilter').value = '';
+            document.getElementById('eligibilityFilter').value = '';
+            filterSchemes();
+        }
+
+        function toggleDetails(button) {
+            const card = button.closest('.scheme-card');
+            const details = card.querySelector('.scheme-details');
+            
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                details.classList.add('animate-slide-up');
+                button.textContent = 'Hide Details';
+            } else {
+                details.classList.add('hidden');
+                details.classList.remove('animate-slide-up');
+                button.textContent = 'View Details';
+            }
+        }
+
+        function applyScheme(schemeName) {
+            const applicationInfo = {
+                'PM-KISAN Direct Benefit': {
+                    url: 'https://pmkisan.gov.in/',
+                    documents: 'Aadhaar card, Bank account details, Land records',
+                    process: '1. Visit official website\n2. Click on "New Farmer Registration"\n3. Fill required details\n4. Upload documents\n5. Submit application'
+                },
+                'Pradhan Mantri Fasal Bima': {
+                    url: 'https://pmfby.gov.in/',
+                    documents: 'Aadhaar card, Bank account, Land documents, Sowing certificate',
+                    process: '1. Visit nearest bank or CSC\n2. Fill application form\n3. Pay premium amount\n4. Get policy document\n5. Report crop loss within 72 hours if needed'
+                },
+                'Soil Health Card Scheme': {
+                    url: 'https://soilhealth.dac.gov.in/',
+                    documents: 'Aadhaar card, Land ownership documents',
+                    process: '1. Contact local agriculture officer\n2. Provide soil samples\n3. Wait for laboratory testing\n4. Receive digital soil health card\n5. Follow recommendations'
+                }
+            };
+
+            const info = applicationInfo[schemeName] || {
+                url: '#',
+                documents: 'Aadhaar card, Bank account details, Land records',
+                process: 'Contact your local agriculture office for application process'
+            };
+
+            const message = `📋 Application Information for ${schemeName}:\n\n` +
+                          `📄 Required Documents:\n${info.documents}\n\n` +
+                          `🔄 Application Process:\n${info.process}\n\n` +
+                          `🌐 Official Website: ${info.url}\n\n` +
+                          `Would you like to proceed with the application?`;
+
+            if (confirm(message)) {
+                if (info.url !== '#') {
+                    window.open(info.url, '_blank', 'noopener,noreferrer');
+                }
+                alert(`✅ Application initiated for ${schemeName}!\n\nYou will be redirected to the official website. Please keep all required documents ready.`);
+            }
+        }
+
+        function notifyMe(schemeName) {
+            const email = prompt('Enter your email address to get notified when this scheme launches:');
+            if (email && email.includes('@')) {
+                alert(`🔔 Great! We'll notify you at ${email} when "${schemeName}" becomes available.\n\nYou'll receive updates about:\n• Launch date\n• Application process\n• Required documents\n• Eligibility criteria`);
+            } else if (email) {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        function toggleBookmark(button) {
+            const isBookmarked = button.classList.contains('bookmarked');
+            
+            if (isBookmarked) {
+                button.classList.remove('bookmarked');
+                button.querySelector('svg').style.fill = 'none';
+                button.style.color = '#9ca3af';
+            } else {
+                button.classList.add('bookmarked');
+                button.querySelector('svg').style.fill = '#eab308';
+                button.style.color = '#eab308';
+            }
+        }
+
+        function toggleBookmarks() {
+            const bookmarkedCards = document.querySelectorAll('.scheme-card');
+            const showingBookmarks = document.body.classList.contains('showing-bookmarks');
+            
+            if (showingBookmarks) {
+                // Show all cards
+                bookmarkedCards.forEach(card => card.style.display = 'block');
+                document.body.classList.remove('showing-bookmarks');
+            } else {
+                // Show only bookmarked cards
+                let hasBookmarks = false;
+                bookmarkedCards.forEach(card => {
+                    const bookmarkButton = card.querySelector('button[onclick*="toggleBookmark"]');
+                    if (bookmarkButton && bookmarkButton.classList.contains('bookmarked')) {
+                        card.style.display = 'block';
+                        hasBookmarks = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                if (!hasBookmarks) {
+                    alert('📌 No bookmarked schemes found!\n\nClick the bookmark icon (📑) on any scheme card to save it for later.');
+                    return;
+                }
+                
+                document.body.classList.add('showing-bookmarks');
+            }
+            
+            filterSchemes(); // Update visible count
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some initial animations
+            const cards = document.querySelectorAll('.scheme-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-fade-in');
+                }, index * 100);
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981acf8d32053226',t:'MTc1ODMwMzAyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

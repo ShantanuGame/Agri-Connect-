@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriConnect - Empowering Farmers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#16a34a',
+                        'primary-dark': '#15803d',
+                        'accent': '#f59e0b',
+                        'light-green': '#dcfce7'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header Navigation -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-primary">🌾 AgriConnect</div>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link text-primary font-medium hover:text-primary-dark transition-colors">Home</a>
+                    <a href="#services" class="nav-link text-gray-600 hover:text-primary transition-colors">Services</a>
+                    <a href="#upload" class="nav-link text-gray-600 hover:text-primary transition-colors">Upload</a>
+                    <a href="profile.html" class="nav-link text-gray-600 hover:text-primary transition-colors">Profile</a>
+                </nav>
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-primary">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden pb-4">
+                <a href="#home" class="block py-2 text-primary font-medium">Home</a>
+                <a href="#services" class="block py-2 text-gray-600 hover:text-primary">Services</a>
+                <a href="#upload" class="block py-2 text-gray-600 hover:text-primary">Upload</a>
+                <a href="profile.html" class="block py-2 text-gray-600 hover:text-primary">Profile</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: Home -->
+    <section id="home" class="bg-gradient-to-br from-primary to-primary-dark text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6">AgriConnect</h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-4xl mx-auto leading-relaxed">
+                Bridging the gap between farmers and modern technology. Our platform connects agricultural communities with essential resources, government schemes, and AI-powered assistance to enhance farming productivity and sustainability.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="scrollToSection('services')" class="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                    Explore Services 🚀
+                </button>
+                <button onclick="scrollToSection('upload')" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary transition-colors">
+                    Get Started 🌱
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Services -->
+    <section id="services" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Our Services</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Comprehensive solutions designed to empower farmers with technology, information, and support
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Chat-bot Card -->
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-blue-200">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">🤖</div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">AI Chat-bot</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Get instant answers to your farming scheme questions. Our AI assistant provides 24/7 support.
+                        </p>
+                        <button onclick="openChatbot()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                          <a href="chatbot.html">  Start Chatting </a>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Schemes Card -->
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-green-200">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">📋</div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Government Schemes</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Stay updated with the latest government schemes, subsidies, and financial assistance programs available for farmers and agricultural development.
+                        </p>
+                        <button onclick="viewSchemes()" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors font-medium">
+                           <a href="schemes.html"> View Schemes  </a>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- News Card -->
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-orange-200">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">📰</div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Agricultural News</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Keep up with the latest developments in agriculture, market prices, weather updates, and industry trends that affect your farming decisions.
+                            COMING SOON...
+                        </p>
+                        <button onclick="readNews()" class="bg-accent text-white px-6 py-3 rounded-lg hover:bg-yellow-600 transition-colors font-medium">
+                          <a href="agrinews.html">  Read News </a>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Analytics -->
+    <section id="upload" class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Platform Impact</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    See how AgriConnect is making a difference in the agricultural community
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Statistics Cards -->
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-3xl font-bold text-primary">25,847</h3>
+                                <p class="text-gray-600 font-medium">Farmers Registered</p>
+                            </div>
+                            <div class="text-4xl">👨‍🌾</div>
+                        </div>
+                        <div class="mt-4 bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">85% growth this year</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-3xl font-bold text-blue-600">1,234,567</h3>
+                                <p class="text-gray-600 font-medium">Queries Resolved</p>
+                            </div>
+                            <div class="text-4xl">💬</div>
+                        </div>
+                        <div class="mt-4 bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">92% satisfaction rate</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-3xl font-bold text-accent">₹45.2 Cr</h3>
+                                <p class="text-gray-600 font-medium">Subsidies Claimed</p>
+                            </div>
+                            <div class="text-4xl">💰</div>
+                        </div>
+                        <div class="mt-4 bg-gray-200 rounded-full h-2">
+                            <div class="bg-accent h-2 rounded-full" style="width: 78%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">78% increase in claims</p>
+                    </div>
+                </div>
+
+                <!-- Impact Chart Visualization -->
+                <div class="bg-white rounded-xl p-8 shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Monthly Growth Trends</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Jan 2024</span>
+                            <div class="flex-1 mx-4 bg-gray-200 rounded-full h-3">
+                                <div class="bg-primary h-3 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">11,630</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Feb 2024</span>
+                            <div class="flex-1 mx-4 bg-gray-200 rounded-full h-3">
+                                <div class="bg-primary h-3 rounded-full" style="width: 62%"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">16,024</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Mar 2024</span>
+                            <div class="flex-1 mx-4 bg-gray-200 rounded-full h-3">
+                                <div class="bg-primary h-3 rounded-full" style="width: 78%"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">20,156</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-600">Apr 2024</span>
+                            <div class="flex-1 mx-4 bg-gray-200 rounded-full h-3">
+                                <div class="bg-primary h-3 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">25,847</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <p class="text-gray-600">
+                            <span class="font-semibold text-primary">122% growth</span> in farmer registrations over 4 months
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Team -->
+    <section id="profile" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Meet Our Team</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Passionate individuals working together to revolutionize agriculture through technology
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Team Member 1 (You) -->
+                <div class="bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-8 text-white text-center shadow-xl">
+                    <div class="w-32 h-32 bg-white rounded-full mx-auto mb-6 flex items-center justify-center text-6xl">
+                        👨‍💻
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Shantanu Game</h3>
+                    <p class="text-lg mb-4 text-green-100">Founder & Lead Developer</p>
+                    <p class="text-sm leading-relaxed mb-6 text-green-50">
+                        As the Project Head, I lead the team with innovation, strategy, and a vision for impactful outcomes.                    </p>
+                    <div class="flex justify-center space-x-4">
+                        <button onclick="contactTeamMember('Alex')" class="bg-white text-primary px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium">
+                            Contact
+                        </button>
+                        <button onclick="viewProfile('Alex')" class="border border-white text-white px-4 py-2 rounded-lg hover:bg-white hover:text-primary transition-colors text-sm font-medium">
+                           <a href="www.linkedin.com/in/shantanu-game-a93b78288"> View Profile </a>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Team Member 2 -->
+                <div class="bg-white rounded-2xl p-8 text-center shadow-xl border-2 border-gray-100">
+                    <div class="w-32 h-32 bg-blue-100 rounded-full mx-auto mb-6 flex items-center justify-center text-6xl">
+                        👨‍💼
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">Tushar bogir</h3>
+                    <p class="text-lg mb-4 text-blue-600">Front-end developer</p>
+                    <p class="text-sm leading-relaxed mb-6 text-gray-600">
+                            Responsible for designing and developing the mobile application interface, ensuring a user-friendly and responsive experience                    </p>
+                    <div class="flex justify-center space-x-4">
+                        <button onclick="contactTeamMember('Sarah')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                            Contact
+                        </button>
+                        <button onclick="viewProfile('Sarah')" class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-600 hover:text-white transition-colors text-sm font-medium">
+                            View Profile
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Team Member 3 -->
+                <div class="bg-white rounded-2xl p-8 text-center shadow-xl border-2 border-gray-100">
+                    <div class="w-32 h-32 bg-orange-100 rounded-full mx-auto mb-6 flex items-center justify-center text-6xl">
+                        👨‍💼
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-gray-800">Shantanu Game</h3>
+                    <p class="text-lg mb-4 text-accent">backend Development</p>
+                    <p class="text-sm leading-relaxed mb-6 text-gray-600">
+                        Handles server-side logic, APIs, and database integration to enable secure, scalable, and efficient system functionality                    </p>
+                    <div class="flex justify-center space-x-4">
+                        <button onclick="contactTeamMember('Raj')" class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors text-sm font-medium">
+                            Contact
+                        </button>
+                        <button onclick="viewProfile('Raj')" class="border border-accent text-accent px-4 py-2 rounded-lg hover:bg-accent hover:text-white transition-colors text-sm font-medium">
+                            View Profile
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="text-2xl font-bold text-primary mb-4">🌾 AgriConnect</div>
+                    <p class="text-gray-400">Empowering farmers through technology and innovation.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#home" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#services" class="hover:text-white transition-colors">Services</a></li>
+                        <li><a href="#upload" class="hover:text-white transition-colors">Analytics</a></li>
+                        <li><a href="#profile" class="hover:text-white transition-colors">Team</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>AI Chat Support</li>
+                        <li>Government Schemes</li>
+                        <li>Agricultural News</li>
+                        <li>Farmer Community</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>📧 info@agriconnect.com</li>
+                        <li>📞 1-800-AGRI-HELP</li>
+                        <li>🌐 www.agriconnect.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 AgriConnect. All rights reserved. Built with ❤️ for farmers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+            updateActiveNav(sectionId);
+        }
+
+        function updateActiveNav(activeSection) {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-primary', 'font-medium');
+                link.classList.add('text-gray-600');
+            });
+            
+            const activeLink = document.querySelector(`a[href="#${activeSection}"]`);
+            if (activeLink) {
+                activeLink.classList.remove('text-gray-600');
+                activeLink.classList.add('text-primary', 'font-medium');
+            }
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Service functions
+        function openChatbot() {
+            alert('🤖 AI Chatbot Opening...\n\nHello! I\'m your agricultural assistant. How can I help you today?\n\n• Crop management advice\n• Pest control solutions\n• Weather-based recommendations\n• Government scheme information');
+        }
+
+        function viewSchemes() {
+            alert('📋 Latest Government Schemes:\n\n• PM-KISAN Direct Benefit Transfer\n• Pradhan Mantri Fasal Bima Yojana\n• Soil Health Card Scheme\n• National Agriculture Market (e-NAM)\n• Kisan Credit Card Scheme\n\nClick on any scheme for detailed information and application process.');
+        }
+
+        function readNews() {
+            alert('📰 Agricultural News Headlines:\n\n• Monsoon forecast shows 102% normal rainfall\n• New organic farming subsidies announced\n• Digital agriculture adoption increases by 40%\n• Export opportunities for Indian farmers expand\n• Technology integration in rural farming communities');
+        }
+
+        // Team functions
+        function contactTeamMember(name) {
+            const contacts = {
+                'Alex': 'alex.johnson@agriconnect.com | LinkedIn: /in/alexjohnson-dev',
+                'Sarah': 'dr.sarah.chen@agriconnect.com | Research Gate: /Sarah-Chen',
+                'Raj': 'raj.patel@agriconnect.com | LinkedIn: /in/rajpatel-agribusiness'
+            };
+            alert(`Contact ${name}:\n\n${contacts[name]}\n\nFeel free to reach out for collaboration, questions, or partnership opportunities!`);
+        }
+
+        function viewProfile(name) {
+            const profiles = {
+                'Alex': 'Full-stack developer specializing in agricultural technology solutions. Led development of 5+ farming apps with 100K+ users. Expert in React, Node.js, and AI integration.',
+                'Sarah': 'Agricultural scientist with 10+ years of research experience. Published 25+ papers on sustainable farming. Consultant for FAO and various agricultural organizations.',
+                'Raj': 'Former cotton farmer turned business strategist. Built partnerships with 50+ agricultural cooperatives. Expert in rural market dynamics and farmer community building.'
+            };
+            alert(`${name}'s Profile:\n\n${profiles[name]}\n\nAchievements, certifications, and detailed work history available on our team page.`);
+        }
+
+        // Smooth scrolling for all navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    const sectionId = this.getAttribute('href').substring(1);
+                    updateActiveNav(sectionId);
+                }
+            });
+        });
+
+        // Update active navigation on scroll
+        window.addEventListener('scroll', function() {
+            const sections = ['home', 'services', 'upload', 'profile'];
+            const scrollPos = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const element = document.getElementById(section);
+                if (element && scrollPos >= element.offsetTop && scrollPos < element.offsetTop + element.offsetHeight) {
+                    updateActiveNav(section);
+                }
+            });
+        });
+
+        // Close mobile menu when clicking on links
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobileMenu').classList.add('hidden');
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981ab5d092462dfd',t:'MTc1ODMwMTk3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

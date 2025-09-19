@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriBot - AI Agricultural Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#16a34a',
+                        'primary-dark': '#15803d',
+                        'accent': '#f59e0b',
+                        'light-green': '#dcfce7',
+                        'chat-bg': '#f8fafc'
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'fade-in': 'fadeIn 0.5s ease-in',
+                        'slide-up': 'slideUp 0.3s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-green-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <button onclick="goBack()" class="text-primary hover:text-primary-dark transition-colors p-2 rounded-lg hover:bg-green-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary to-primary-dark rounded-full flex items-center justify-center text-white text-xl">
+                            🤖
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-800">AgriBot Assistant</h1>
+                            <p class="text-sm text-green-600 flex items-center">
+                                <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                                Online & Ready
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="clearChat()" class="text-gray-600 hover:text-red-600 transition-colors p-2 rounded-lg hover:bg-red-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                    <div class="text-sm text-gray-500">
+                        <span id="messageCount">0</span> messages
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-80px)]">
+        <!-- Sidebar with Quick Actions -->
+        <div class="lg:col-span-1 space-y-4">
+            <!-- Welcome Card -->
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                <div class="text-center mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-full mx-auto mb-3 flex items-center justify-center text-2xl animate-bounce-slow">
+                        🌾
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-2">Welcome to AgriBot!</h3>
+                    <p class="text-sm text-gray-600">Your AI-powered agricultural assistant</p>
+                </div>
+            </div>
+
+            <!-- Quick Topics -->
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <span class="w-2 h-2 bg-primary rounded-full mr-2"></span>
+                    Quick Topics
+                </h3>
+                <div class="space-y-2">
+                    <button onclick="askQuestion('What are the best crops for this season?')" class="w-full text-left p-3 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl hover:from-green-100 hover:to-blue-100 transition-all duration-300 border border-green-100">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-lg">🌱</span>
+                            <div>
+                                <div class="font-medium text-sm text-gray-800">Seasonal Crops</div>
+                                <div class="text-xs text-gray-600">Best crops for current season</div>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <button onclick="askQuestion('How to control pest attacks naturally?')" class="w-full text-left p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl hover:from-yellow-100 hover:to-orange-100 transition-all duration-300 border border-yellow-100">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-lg">🐛</span>
+                            <div>
+                                <div class="font-medium text-sm text-gray-800">Pest Control</div>
+                                <div class="text-xs text-gray-600">Natural pest management</div>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <button onclick="askQuestion('What government schemes are available?')" class="w-full text-left p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl hover:from-purple-100 hover:to-pink-100 transition-all duration-300 border border-purple-100">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-lg">🏛️</span>
+                            <div>
+                                <div class="font-medium text-sm text-gray-800">Gov Schemes</div>
+                                <div class="text-xs text-gray-600">Available subsidies</div>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <button onclick="askQuestion('How to improve soil health?')" class="w-full text-left p-3 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl hover:from-amber-100 hover:to-yellow-100 transition-all duration-300 border border-amber-100">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-lg">🌍</span>
+                            <div>
+                                <div class="font-medium text-sm text-gray-800">Soil Health</div>
+                                <div class="text-xs text-gray-600">Improve soil fertility</div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Weather Widget -->
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                <h3 class="font-semibold text-gray-800 mb-4 flex items-center">
+                    <span class="text-lg mr-2">🌤️</span>
+                    Weather Info
+                </h3>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-gray-800">28°C</div>
+                    <div class="text-sm text-gray-600 mb-2">Partly Cloudy</div>
+                    <div class="text-xs text-gray-500">
+                        <div>Humidity: 65%</div>
+                        <div>Wind: 12 km/h</div>
+                    </div>
+                    <button onclick="askQuestion('What farming activities are suitable for today\'s weather?')" class="mt-3 text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">
+                        Weather Advice
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="lg:col-span-3 flex flex-col">
+            <!-- Chat Container -->
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 flex-1 flex flex-col overflow-hidden">
+                <!-- Chat Header -->
+                <div class="bg-gradient-to-r from-primary to-blue-600 text-white p-4 rounded-t-2xl">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-lg">Agricultural Expert Assistant</h3>
+                            <p class="text-sm text-green-100">Ask me anything about farming, crops, weather, or schemes!</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-sm">AI Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div id="chatMessages" class="flex-1 p-6 overflow-y-auto space-y-4 bg-gradient-to-b from-white/50 to-white/30">
+                    <!-- Welcome Message -->
+                    <div class="flex justify-start animate-fade-in">
+                        <div class="flex items-start space-x-3 max-w-md">
+                            <div class="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                                🤖
+                            </div>
+                            <div class="bg-white/80 backdrop-blur-sm rounded-2xl rounded-tl-sm px-4 py-3 shadow-lg border border-white/50">
+                                <p class="text-gray-800 text-sm leading-relaxed">
+                                    Hello! I'm AgriBot, your AI agricultural assistant. I'm here to help you with:
+                                </p>
+                                <ul class="text-xs mt-2 space-y-1 text-gray-600">
+                                    <li class="flex items-center"><span class="w-1 h-1 bg-primary rounded-full mr-2"></span>Crop management & diseases</li>
+                                    <li class="flex items-center"><span class="w-1 h-1 bg-primary rounded-full mr-2"></span>Weather & irrigation advice</li>
+                                    <li class="flex items-center"><span class="w-1 h-1 bg-primary rounded-full mr-2"></span>Government schemes & subsidies</li>
+                                    <li class="flex items-center"><span class="w-1 h-1 bg-primary rounded-full mr-2"></span>Market prices & trends</li>
+                                </ul>
+                                <p class="text-xs text-gray-500 mt-2">What would you like to know?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div id="typingIndicator" class="hidden px-6 pb-2">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white text-sm">
+                            🤖
+                        </div>
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl rounded-tl-sm px-4 py-3 shadow-lg border border-white/50">
+                            <div class="flex space-x-1">
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="p-4 bg-white/50 backdrop-blur-sm border-t border-white/50 rounded-b-2xl">
+                    <div class="flex space-x-3">
+                        <div class="flex-1 relative">
+                            <input 
+                                type="text" 
+                                id="chatInput" 
+                                placeholder="Ask me about farming, crops, weather, or government schemes..." 
+                                class="w-full px-4 py-3 pr-12 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 text-gray-800 placeholder-gray-500"
+                                onkeypress="handleKeyPress(event)"
+                            >
+                            <button onclick="sendMessage()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary hover:text-primary-dark transition-colors p-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <button 
+                            onclick="sendMessage()" 
+                            class="bg-gradient-to-r from-primary to-blue-600 text-white px-6 py-3 rounded-xl hover:from-primary-dark hover:to-blue-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
+                        >
+                            Send
+                        </button>
+                    </div>
+                    
+                    <!-- Quick Suggestions -->
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        <button onclick="askQuestion('Current market prices')" class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition-colors">
+                            Market Prices
+                        </button>
+                        <button onclick="askQuestion('Monsoon farming tips')" class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full hover:bg-green-200 transition-colors">
+                            Monsoon Tips
+                        </button>
+                        <button onclick="askQuestion('Organic fertilizers')" class="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full hover:bg-yellow-200 transition-colors">
+                            Organic Fertilizers
+                        </button>
+                        <button onclick="askQuestion('Crop insurance')" class="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full hover:bg-purple-200 transition-colors">
+                            Insurance
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let messageCount = 0;
+        let isTyping = false;
+
+        function goBack() {
+            if (confirm('Are you sure you want to leave the chat? Your conversation will be saved.')) {
+                window.history.back();
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function askQuestion(question) {
+            document.getElementById('chatInput').value = question;
+            sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message === '' || isTyping) return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Simulate AI response after delay
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = generateResponse(message);
+                addMessage(response, 'bot');
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function addMessage(message, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} animate-slide-up`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3 max-w-md">
+                        <div class="bg-gradient-to-r from-primary to-blue-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-lg">
+                            <p class="text-sm leading-relaxed">${message}</p>
+                        </div>
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                            👨‍🌾
+                        </div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3 max-w-md lg:max-w-lg">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white text-sm flex-shrink-0">
+                            🤖
+                        </div>
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl rounded-tl-sm px-4 py-3 shadow-lg border border-white/50">
+                            <p class="text-gray-800 text-sm leading-relaxed">${message}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            messageCount++;
+            document.getElementById('messageCount').textContent = messageCount;
+        }
+
+        function showTypingIndicator() {
+            isTyping = true;
+            document.getElementById('typingIndicator').classList.remove('hidden');
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            isTyping = false;
+            document.getElementById('typingIndicator').classList.add('hidden');
+        }
+
+        function generateResponse(message) {
+            const responses = {
+                'seasonal crops': '🌱 For the current season, I recommend:\n\n• **Kharif crops** (June-October): Rice, Cotton, Sugarcane, Maize\n• **Rabi crops** (November-April): Wheat, Barley, Peas, Gram\n• **Zaid crops** (April-June): Watermelon, Cucumber, Fodder crops\n\nConsider your local climate, soil type, and water availability. Would you like specific advice for your region?',
+                
+                'pest control': '🐛 Here are effective natural pest control methods:\n\n• **Neem oil spray**: Mix 2 tbsp neem oil + 1 tsp soap in 1L water\n• **Companion planting**: Marigolds, basil, mint repel insects\n• **Beneficial insects**: Encourage ladybugs, lacewings, spiders\n• **Crop rotation**: Breaks pest life cycles\n• **Organic sprays**: Garlic-chili spray, soap solution\n\nWhat specific pest are you dealing with?',
+                
+                'government schemes': '🏛️ Current government schemes for farmers:\n\n• **PM-KISAN**: ₹6,000/year direct benefit transfer\n• **Crop Insurance**: Up to ₹2 lakh coverage\n• **Soil Health Card**: Free soil testing\n• **KCC Scheme**: Credit up to ₹3 lakh\n• **Organic Farming**: ₹50,000/hectare support\n• **Micro Irrigation**: 55% subsidy on drip systems\n\nWhich scheme interests you most? I can provide application details.',
+                
+                'soil health': '🌍 To improve soil fertility naturally:\n\n• **Organic matter**: Add compost, farmyard manure, green manure\n• **Cover crops**: Legumes like clover, alfalfa fix nitrogen\n• **Crop rotation**: Prevents nutrient depletion\n• **Minimal tillage**: Preserves soil structure\n• **Biochar**: Improves water retention and nutrients\n• **Earthworms**: Vermicompost enhances soil biology\n\nTest your soil pH first. Most crops prefer 6.0-7.0 pH. Need help with soil testing?',
+                
+                'weather advice': '🌤️ Based on current weather (28°C, partly cloudy):\n\n• **Good for**: Land preparation, sowing, weeding\n• **Irrigation**: Moderate watering needed\n• **Pest watch**: Monitor for fungal diseases due to humidity\n• **Harvesting**: Excellent conditions for grain crops\n• **Spraying**: Ideal time for organic treatments\n\nHumidity at 65% is perfect for most farming activities. Plan outdoor work for early morning or evening.',
+                
+                'market prices': '💰 Current market trends:\n\n• **Wheat**: ₹2,150/quintal (↑ 5% from last month)\n• **Rice**: ₹1,950/quintal (→ stable)\n• **Cotton**: ₹6,200/quintal (↓ 3%)\n• **Sugarcane**: ₹350/quintal (↑ 2%)\n• **Onion**: ₹2,800/quintal (↑ 15%)\n\n*Prices vary by region and quality. Check your local mandi for accurate rates. Would you like price alerts for specific crops?',
+                
+                'monsoon tips': '🌧️ Essential monsoon farming tips:\n\n• **Drainage**: Ensure proper field drainage to prevent waterlogging\n• **Disease control**: Increase fungicide applications\n• **Seed treatment**: Use fungicide-treated seeds\n• **Nutrient management**: Split nitrogen application\n• **Weed control**: Monitor and control weeds promptly\n• **Storage**: Keep harvested crops in dry, ventilated areas\n\nMonsoon is crucial for Kharif crops. Need specific advice for your crop?',
+                
+                'organic fertilizers': '🌿 Best organic fertilizers:\n\n• **Compost**: 2-3 tons/acre, improves soil structure\n• **Vermicompost**: 1 ton/acre, rich in nutrients\n• **Neem cake**: 200 kg/acre, pest deterrent + fertilizer\n• **Bone meal**: High phosphorus for flowering\n• **Seaweed extract**: Micronutrients + growth hormones\n• **Green manure**: Dhaincha, Sunhemp before main crop\n\nApply 2-3 weeks before sowing for best results. Which crop are you planning?',
+                
+                'crop insurance': '🛡️ Crop insurance benefits:\n\n• **Premium**: Only 2% for food crops, 5% for commercial crops\n• **Coverage**: Natural disasters, pest attacks, diseases\n• **Claim process**: Report within 72 hours of damage\n• **Settlement**: Direct bank transfer within 60 days\n• **Technology**: Satellite imagery for quick assessment\n\n**PMFBY** covers pre-sowing to post-harvest. Enroll during sowing season. Need help with enrollment?'
+            };
+            
+            const lowerMessage = message.toLowerCase();
+            
+            // Find matching response
+            for (const [key, response] of Object.entries(responses)) {
+                if (lowerMessage.includes(key.replace(' ', '')) || lowerMessage.includes(key)) {
+                    return response;
+                }
+            }
+            
+            // Default responses for common patterns
+            if (lowerMessage.includes('weather')) {
+                return responses['weather advice'];
+            } else if (lowerMessage.includes('price') || lowerMessage.includes('market')) {
+                return responses['market prices'];
+            } else if (lowerMessage.includes('scheme') || lowerMessage.includes('subsidy')) {
+                return responses['government schemes'];
+            } else if (lowerMessage.includes('crop') && lowerMessage.includes('season')) {
+                return responses['seasonal crops'];
+            } else if (lowerMessage.includes('pest') || lowerMessage.includes('insect')) {
+                return responses['pest control'];
+            } else if (lowerMessage.includes('soil') || lowerMessage.includes('fertility')) {
+                return responses['soil health'];
+            } else if (lowerMessage.includes('organic') && lowerMessage.includes('fertilizer')) {
+                return responses['organic fertilizers'];
+            } else if (lowerMessage.includes('insurance')) {
+                return responses['crop insurance'];
+            } else if (lowerMessage.includes('monsoon') || lowerMessage.includes('rain')) {
+                return responses['monsoon tips'];
+            }
+            
+            // Generic helpful response
+            return `🤔 I understand you're asking about "${message}". While I don't have specific information on that topic right now, I can help you with:\n\n• Crop selection and management\n• Pest and disease control\n• Government schemes and subsidies\n• Soil health improvement\n• Weather-based farming advice\n• Market prices and trends\n\nCould you rephrase your question or choose one of these topics? I'm here to help! 🌾`;
+        }
+
+        function clearChat() {
+            if (confirm('Are you sure you want to clear the chat history?')) {
+                const messagesContainer = document.getElementById('chatMessages');
+                // Keep only the welcome message
+                const welcomeMessage = messagesContainer.firstElementChild;
+                messagesContainer.innerHTML = '';
+                messagesContainer.appendChild(welcomeMessage);
+                messageCount = 0;
+                document.getElementById('messageCount').textContent = messageCount;
+            }
+        }
+
+        // Auto-focus on input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('chatInput').focus();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981ac3a4218b6ebc',t:'MTc1ODMwMjUzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

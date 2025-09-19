@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agriculture News - AgriConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#16a34a',
+                        'primary-dark': '#15803d',
+                        'accent': '#f59e0b',
+                        'light-green': '#dcfce7'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'slide-in': 'slideIn 0.4s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-green-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <button onclick="goBack()" class="text-primary hover:text-primary-dark transition-colors p-2 rounded-lg hover:bg-green-50">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-primary to-blue-600 rounded-full flex items-center justify-center text-white text-xl">
+                            📰
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-800">Agriculture News</h1>
+                            <p class="text-sm text-gray-600">Latest updates from farming world</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-600">
+                        <span id="newsCount">24</span> articles today
+                    </div>
+                    <button onclick="refreshNews()" class="text-gray-600 hover:text-primary transition-colors p-2 rounded-lg hover:bg-green-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto p-4">
+        <!-- Breaking News Banner -->
+        <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-2xl p-4 mb-8 animate-pulse-slow">
+            <div class="flex items-center space-x-3">
+                <span class="bg-white text-red-500 px-3 py-1 rounded-full text-sm font-bold animate-bounce-slow">BREAKING</span>
+                <p class="text-lg font-semibold">Government announces ₹50,000 crore package for drought-affected farmers</p>
+                <button onclick="readBreakingNews()" class="ml-auto bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors">
+                    Read More
+                </button>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 mb-8">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 flex items-center">
+                    <span class="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                    Filter News
+                </h3>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleBookmarkedNews()" class="text-gray-600 hover:text-yellow-600 transition-colors px-3 py-1 rounded-lg hover:bg-yellow-50 text-sm">
+                        📑 Bookmarked
+                    </button>
+                    <button onclick="clearFilters()" class="text-gray-600 hover:text-red-600 transition-colors px-3 py-1 rounded-lg hover:bg-red-50 text-sm">
+                        Clear Filters
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search News</label>
+                    <input 
+                        type="text" 
+                        id="searchNews" 
+                        placeholder="Search headlines, content..." 
+                        onkeyup="filterNews()"
+                        class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                    >
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select id="categoryFilter" onchange="filterNews()" class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="">All Categories</option>
+                        <option value="Market Prices">Market Prices</option>
+                        <option value="Weather">Weather</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Policy">Policy</option>
+                        <option value="Crops">Crops</option>
+                        <option value="Research">Research</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
+                    <select id="timeFilter" onchange="filterNews()" class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                    <select id="sortFilter" onchange="filterNews()" class="w-full px-4 py-2 bg-white/80 backdrop-blur-sm border border-white/50 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="latest">Latest First</option>
+                        <option value="popular">Most Popular</option>
+                        <option value="relevant">Most Relevant</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Main News Content -->
+            <div class="lg:col-span-3">
+                <!-- Featured Story -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden mb-8 hover:shadow-xl transition-all duration-300">
+                    <div class="relative h-64 bg-gradient-to-r from-green-400 to-blue-500">
+                        <div class="absolute inset-0 bg-black/30"></div>
+                        <div class="absolute inset-0 flex items-center justify-center text-white text-6xl">
+                            🌾
+                        </div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Featured</span>
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 text-white">
+                            <h2 class="text-2xl font-bold mb-2">Record Wheat Harvest Expected This Season Despite Weather Challenges</h2>
+                            <p class="text-sm text-gray-200">Agricultural experts predict a bumper wheat crop across northern states, with yields expected to exceed last year by 15%...</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Crops</span>
+                                <span class="text-sm text-gray-600">2 hours ago</span>
+                                <span class="text-sm text-gray-600">📍 Punjab, Haryana</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="shareArticle('Record Wheat Harvest')" class="text-gray-400 hover:text-blue-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="bookmarkArticle(this)" class="text-gray-400 hover:text-yellow-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="readFullArticle('wheat-harvest')" class="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary-dark transition-colors">
+                            Read Full Article
+                        </button>
+                    </div>
+                </div>
+
+                <!-- News Grid -->
+                <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Market Prices News -->
+                    <div class="news-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300" 
+                         data-category="Market Prices" data-time="today">
+                        <div class="relative h-48 bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-white text-4xl">
+                            📈
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Market Prices</span>
+                                <span class="text-sm text-gray-600">1 hour ago</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Tomato Prices Surge 40% Due to Monsoon Delays</h3>
+                            <p class="text-sm text-gray-600 mb-4">Retail prices of tomatoes have increased significantly across major cities as delayed monsoon affects supply chains...</p>
+                            
+                            <div class="news-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700 mb-2">The wholesale price of tomatoes has reached ₹60-80 per kg in major mandis, compared to ₹25-30 per kg last month. The price surge is attributed to reduced arrivals from key producing states like Karnataka, Andhra Pradesh, and Maharashtra.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Current Prices:</strong></p>
+                                <ul class="text-sm text-gray-700 ml-4 mb-2">
+                                    <li>• Delhi: ₹70-80/kg</li>
+                                    <li>• Mumbai: ₹75-85/kg</li>
+                                    <li>• Bangalore: ₹60-70/kg</li>
+                                    <li>• Chennai: ₹65-75/kg</li>
+                                </ul>
+                                <p class="text-sm text-gray-700">Experts predict prices may remain high for the next 2-3 weeks until fresh arrivals from post-monsoon harvest begin.</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button onclick="toggleNewsDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                                    Read More
+                                </button>
+                                <button onclick="shareArticle('Tomato Prices Surge')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="bookmarkArticle(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weather News -->
+                    <div class="news-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300" 
+                         data-category="Weather" data-time="today">
+                        <div class="relative h-48 bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white text-4xl">
+                            🌧️
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Weather</span>
+                                <span class="text-sm text-gray-600">3 hours ago</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">IMD Predicts Normal Monsoon for Kharif Season</h3>
+                            <p class="text-sm text-gray-600 mb-4">Indian Meteorological Department forecasts normal to above-normal rainfall for the upcoming Kharif season...</p>
+                            
+                            <div class="news-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700 mb-2">The India Meteorological Department (IMD) has predicted normal monsoon rainfall (96-104% of Long Period Average) for the 2024 Kharif season. This is positive news for farmers planning their crop sowing activities.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Regional Forecast:</strong></p>
+                                <ul class="text-sm text-gray-700 ml-4 mb-2">
+                                    <li>• Northwest India: Normal (95-105%)</li>
+                                    <li>• Central India: Above Normal (106-110%)</li>
+                                    <li>• South Peninsula: Normal (96-104%)</li>
+                                    <li>• East & Northeast: Normal (94-106%)</li>
+                                </ul>
+                                <p class="text-sm text-gray-700">Farmers are advised to prepare for timely sowing of rice, cotton, sugarcane, and other Kharif crops.</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button onclick="toggleNewsDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                                    Read More
+                                </button>
+                                <button onclick="shareArticle('IMD Monsoon Forecast')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="bookmarkArticle(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technology News -->
+                    <div class="news-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300" 
+                         data-category="Technology" data-time="today">
+                        <div class="relative h-48 bg-gradient-to-r from-purple-400 to-pink-500 flex items-center justify-center text-white text-4xl">
+                            🚁
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Technology</span>
+                                <span class="text-sm text-gray-600">5 hours ago</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">AI-Powered Drone Technology Revolutionizes Crop Monitoring</h3>
+                            <p class="text-sm text-gray-600 mb-4">New artificial intelligence-enabled drones can detect crop diseases and pest infestations with 95% accuracy...</p>
+                            
+                            <div class="news-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700 mb-2">A breakthrough in agricultural technology has emerged with AI-powered drones that can identify crop health issues, nutrient deficiencies, and pest attacks with unprecedented accuracy. The technology is being piloted across 500 farms in Punjab and Maharashtra.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Key Features:</strong></p>
+                                <ul class="text-sm text-gray-700 ml-4 mb-2">
+                                    <li>• Real-time crop health monitoring</li>
+                                    <li>• Early disease detection (95% accuracy)</li>
+                                    <li>• Precision pesticide application</li>
+                                    <li>• Yield prediction algorithms</li>
+                                    <li>• Water stress identification</li>
+                                </ul>
+                                <p class="text-sm text-gray-700">The technology is expected to reduce crop losses by 30% and increase yields by 20% while minimizing pesticide use.</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button onclick="toggleNewsDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                                    Read More
+                                </button>
+                                <button onclick="shareArticle('AI Drone Technology')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="bookmarkArticle(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Policy News -->
+                    <div class="news-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300" 
+                         data-category="Policy" data-time="week">
+                        <div class="relative h-48 bg-gradient-to-r from-green-400 to-teal-500 flex items-center justify-center text-white text-4xl">
+                            🏛️
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Policy</span>
+                                <span class="text-sm text-gray-600">1 day ago</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">New MSP Rates Announced for Kharif Crops 2024</h3>
+                            <p class="text-sm text-gray-600 mb-4">Government increases Minimum Support Prices for major Kharif crops, with paddy seeing highest increase...</p>
+                            
+                            <div class="news-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700 mb-2">The Cabinet Committee on Economic Affairs has approved new MSP rates for Kharif crops 2024-25, with significant increases across all major crops to ensure farmers get remunerative prices.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>New MSP Rates (₹/quintal):</strong></p>
+                                <ul class="text-sm text-gray-700 ml-4 mb-2">
+                                    <li>• Paddy (Common): ₹2,300 (↑₹117)</li>
+                                    <li>• Paddy (Grade A): ₹2,320 (↑₹117)</li>
+                                    <li>• Cotton: ₹7,121 (↑₹300)</li>
+                                    <li>• Sugarcane: ₹340 (↑₹15)</li>
+                                    <li>• Arhar: ₹7,550 (↑₹250)</li>
+                                </ul>
+                                <p class="text-sm text-gray-700">The increase ranges from 4.2% to 8.5% across different crops, ensuring farmers receive at least 50% more than production cost.</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button onclick="toggleNewsDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                                    Read More
+                                </button>
+                                <button onclick="shareArticle('New MSP Rates')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="bookmarkArticle(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Research News -->
+                    <div class="news-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300" 
+                         data-category="Research" data-time="week">
+                        <div class="relative h-48 bg-gradient-to-r from-indigo-400 to-blue-500 flex items-center justify-center text-white text-4xl">
+                            🔬
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">Research</span>
+                                <span class="text-sm text-gray-600">2 days ago</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Scientists Develop Drought-Resistant Rice Variety</h3>
+                            <p class="text-sm text-gray-600 mb-4">ICAR researchers successfully create new rice variety that can survive with 40% less water...</p>
+                            
+                            <div class="news-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700 mb-2">Scientists at the Indian Council of Agricultural Research (ICAR) have developed a breakthrough drought-resistant rice variety named 'Sahbhagi Dhan' that can thrive with significantly reduced water requirements while maintaining high yields.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Key Benefits:</strong></p>
+                                <ul class="text-sm text-gray-700 ml-4 mb-2">
+                                    <li>• 40% less water requirement</li>
+                                    <li>• Maintains 85-90% of normal yield</li>
+                                    <li>• Matures 10 days earlier</li>
+                                    <li>• Resistant to major pests</li>
+                                    <li>• Suitable for rainfed areas</li>
+                                </ul>
+                                <p class="text-sm text-gray-700">The variety is being tested across 15 states and is expected to be released for commercial cultivation next year.</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button onclick="toggleNewsDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                                    Read More
+                                </button>
+                                <button onclick="shareArticle('Drought-Resistant Rice')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="bookmarkArticle(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crops News -->
+                    <div class="news-card bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300" 
+                         data-category="Crops" data-time="week">
+                        <div class="relative h-48 bg-gradient-to-r from-orange-400 to-red-500 flex items-center justify-center text-white text-4xl">
+                            🌶️
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">Crops</span>
+                                <span class="text-sm text-gray-600">3 days ago</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Chili Exports Hit Record High Despite Global Challenges</h3>
+                            <p class="text-sm text-gray-600 mb-4">India's chili exports reach ₹3,200 crores, making it the world's largest exporter...</p>
+                            
+                            <div class="news-details hidden mb-4 p-3 bg-gray-50 rounded-lg">
+                                <p class="text-sm text-gray-700 mb-2">India has achieved a record-breaking chili export of ₹3,200 crores in the current fiscal year, cementing its position as the world's largest chili exporter. The success is attributed to improved quality standards and new market penetration.</p>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Export Statistics:</strong></p>
+                                <ul class="text-sm text-gray-700 ml-4 mb-2">
+                                    <li>• Total exports: 4.2 lakh tonnes</li>
+                                    <li>• Value: ₹3,200 crores (↑18%)</li>
+                                    <li>• Major destinations: USA, UK, Germany</li>
+                                    <li>• New markets: Japan, South Korea</li>
+                                    <li>• Andhra Pradesh leads production</li>
+                                </ul>
+                                <p class="text-sm text-gray-700">The government's focus on quality certification and organic farming has opened new premium markets for Indian chilies.</p>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <button onclick="toggleNewsDetails(this)" class="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                                    Read More
+                                </button>
+                                <button onclick="shareArticle('Chili Exports Record')" class="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="bookmarkArticle(this)" class="p-2 text-gray-400 hover:text-yellow-500 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load More Button -->
+                <div class="text-center mt-8">
+                    <button onclick="loadMoreNews()" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary-dark transition-colors">
+                        Load More Articles
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Trending Topics -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <span class="w-2 h-2 bg-red-600 rounded-full mr-3"></span>
+                        Trending Topics
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg cursor-pointer hover:bg-red-100 transition-colors" onclick="searchTopic('drought relief')">
+                            <span class="text-sm font-medium text-red-800">#DroughtRelief</span>
+                            <span class="text-xs text-red-600">🔥 Hot</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg cursor-pointer hover:bg-green-100 transition-colors" onclick="searchTopic('monsoon forecast')">
+                            <span class="text-sm font-medium text-green-800">#MonsoonForecast</span>
+                            <span class="text-xs text-green-600">📈 Rising</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors" onclick="searchTopic('AI farming')">
+                            <span class="text-sm font-medium text-blue-800">#AIFarming</span>
+                            <span class="text-xs text-blue-600">⚡ Trending</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors" onclick="searchTopic('MSP rates')">
+                            <span class="text-sm font-medium text-yellow-800">#MSPRates</span>
+                            <span class="text-xs text-yellow-600">📊 Popular</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weather Widget -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <span class="w-2 h-2 bg-blue-600 rounded-full mr-3"></span>
+                        Weather Update
+                    </h3>
+                    
+                    <div class="text-center mb-4">
+                        <div class="text-4xl mb-2">🌤️</div>
+                        <div class="text-2xl font-bold text-gray-800">28°C</div>
+                        <div class="text-sm text-gray-600">Partly Cloudy</div>
+                        <div class="text-xs text-gray-500">Delhi, India</div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Humidity</span>
+                            <span class="font-medium">65%</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Wind Speed</span>
+                            <span class="font-medium">12 km/h</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Rainfall</span>
+                            <span class="font-medium">2mm</span>
+                        </div>
+                    </div>
+                    
+                    <button onclick="viewDetailedWeather()" class="w-full mt-4 bg-blue-100 text-blue-800 py-2 rounded-lg hover:bg-blue-200 transition-colors text-sm">
+                        7-Day Forecast
+                    </button>
+                </div>
+
+                <!-- Newsletter Subscription -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <span class="w-2 h-2 bg-purple-600 rounded-full mr-3"></span>
+                        Daily Newsletter
+                    </h3>
+                    
+                    <p class="text-sm text-gray-600 mb-4">Get the latest agriculture news delivered to your inbox every morning.</p>
+                    
+                    <div class="space-y-3">
+                        <input 
+                            type="email" 
+                            placeholder="Enter your email" 
+                            class="w-full px-4 py-2 bg-white/80 border border-white/50 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                        >
+                        <button onclick="subscribeNewsletter()" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors text-sm">
+                            Subscribe Now
+                        </button>
+                    </div>
+                    
+                    <div class="mt-3 text-xs text-gray-500">
+                        ✓ Daily market prices<br>
+                        ✓ Weather alerts<br>
+                        ✓ Policy updates<br>
+                        ✓ Unsubscribe anytime
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <span class="w-2 h-2 bg-orange-600 rounded-full mr-3"></span>
+                        Quick Links
+                    </h3>
+                    
+                    <div class="space-y-2">
+                        <button onclick="viewMarketPrices()" class="w-full text-left p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-800">📈 Market Prices</span>
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        
+                        <button onclick="viewWeatherForecast()" class="w-full text-left p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-800">🌦️ Weather Forecast</span>
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        
+                        <button onclick="viewGovSchemes()" class="w-full text-left p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-800">🏛️ Gov Schemes</span>
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                        
+                        <button onclick="viewExpertAdvice()" class="w-full text-left p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-800">👨‍🌾 Expert Advice</span>
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="noResults" class="hidden text-center py-12">
+            <div class="text-6xl mb-4">📰</div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">No news articles found</h3>
+            <p class="text-gray-600 mb-4">Try adjusting your search terms or filters</p>
+            <button onclick="clearFilters()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">
+                Clear All Filters
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function filterNews() {
+            const searchTerm = document.getElementById('searchNews').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const timeFilter = document.getElementById('timeFilter').value;
+            
+            const newsCards = document.querySelectorAll('.news-card');
+            let visibleCount = 0;
+            
+            newsCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const content = card.querySelector('p').textContent.toLowerCase();
+                const category = card.dataset.category;
+                const time = card.dataset.time;
+                
+                const matchesSearch = title.includes(searchTerm) || content.includes(searchTerm);
+                const matchesCategory = !categoryFilter || category === categoryFilter;
+                const matchesTime = !timeFilter || time === timeFilter;
+                
+                if (matchesSearch && matchesCategory && matchesTime) {
+                    card.style.display = 'block';
+                    card.classList.add('animate-fade-in');
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                    card.classList.remove('animate-fade-in');
+                }
+            });
+            
+            document.getElementById('newsCount').textContent = visibleCount;
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        function clearFilters() {
+            document.getElementById('searchNews').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('timeFilter').value = '';
+            document.getElementById('sortFilter').value = 'latest';
+            filterNews();
+        }
+
+        function toggleNewsDetails(button) {
+            const card = button.closest('.news-card');
+            const details = card.querySelector('.news-details');
+            
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                details.classList.add('animate-slide-up');
+                button.textContent = 'Show Less';
+            } else {
+                details.classList.add('hidden');
+                details.classList.remove('animate-slide-up');
+                button.textContent = 'Read More';
+            }
+        }
+
+        function shareArticle(title) {
+            const shareData = {
+                title: title,
+                text: `Check out this agriculture news: ${title}`,
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData);
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                const shareText = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('📋 Article link copied to clipboard!\n\nYou can now share it with others.');
+                });
+            }
+        }
+
+        function bookmarkArticle(button) {
+            const isBookmarked = button.classList.contains('bookmarked');
+            
+            if (isBookmarked) {
+                button.classList.remove('bookmarked');
+                button.querySelector('svg').style.fill = 'none';
+                button.style.color = '#9ca3af';
+                alert('📑 Article removed from bookmarks');
+            } else {
+                button.classList.add('bookmarked');
+                button.querySelector('svg').style.fill = '#eab308';
+                button.style.color = '#eab308';
+                alert('📑 Article bookmarked successfully!\n\nYou can view all bookmarked articles by clicking the "Bookmarked" filter.');
+            }
+        }
+
+        function toggleBookmarkedNews() {
+            const newsCards = document.querySelectorAll('.news-card');
+            const showingBookmarks = document.body.classList.contains('showing-bookmarks');
+            
+            if (showingBookmarks) {
+                // Show all cards
+                newsCards.forEach(card => card.style.display = 'block');
+                document.body.classList.remove('showing-bookmarks');
+            } else {
+                // Show only bookmarked cards
+                let hasBookmarks = false;
+                newsCards.forEach(card => {
+                    const bookmarkButton = card.querySelector('button[onclick*="bookmarkArticle"]');
+                    if (bookmarkButton && bookmarkButton.classList.contains('bookmarked')) {
+                        card.style.display = 'block';
+                        hasBookmarks = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                if (!hasBookmarks) {
+                    alert('📑 No bookmarked articles found!\n\nClick the bookmark icon (📑) on any article to save it for later reading.');
+                    return;
+                }
+                
+                document.body.classList.add('showing-bookmarks');
+            }
+            
+            filterNews(); // Update visible count
+        }
+
+        function refreshNews() {
+            const button = event.target.closest('button');
+            const originalContent = button.innerHTML;
+            
+            button.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>';
+            
+            setTimeout(() => {
+                button.innerHTML = originalContent;
+                alert('🔄 News refreshed!\n\n• 3 new articles added\n• Market prices updated\n• Weather alerts refreshed\n\nStay updated with the latest agriculture news!');
+            }, 2000);
+        }
+
+        function readBreakingNews() {
+            alert('🚨 BREAKING NEWS: Government Drought Relief Package\n\n📍 Details:\n• ₹50,000 crore emergency fund approved\n• Direct cash transfer to affected farmers\n• Crop insurance claims fast-tracked\n• Free fodder distribution for livestock\n• Water tanker services in drought areas\n\n📅 Implementation: Immediate\n🎯 Beneficiaries: 2.5 crore farmers across 12 states\n\nThis is the largest drought relief package announced in recent years.');
+        }
+
+        function readFullArticle(articleId) {
+            alert('📖 Full Article: Record Wheat Harvest Expected\n\n🌾 Despite challenging weather conditions including unseasonal rains and hailstorms in some regions, agricultural experts are optimistic about this year\'s wheat harvest. The latest estimates suggest production could reach 112 million tonnes, surpassing last year\'s 109.5 million tonnes.\n\n📊 Key Highlights:\n• Punjab: 18.5 million tonnes expected\n• Haryana: 12.2 million tonnes expected\n• UP: 35.8 million tonnes expected\n• MP: 19.1 million tonnes expected\n\n🔬 Factors contributing to success:\n• Improved seed varieties\n• Better irrigation management\n• Timely fertilizer application\n• Favorable temperature conditions\n\nThis bumper harvest is expected to strengthen India\'s position as the world\'s second-largest wheat producer and boost farmer incomes significantly.');
+        }
+
+        function searchTopic(topic) {
+            document.getElementById('searchNews').value = topic;
+            filterNews();
+            alert(`🔍 Searching for: "${topic}"\n\nShowing all articles related to ${topic}. Use the search filters above to refine your results further.`);
+        }
+
+        function loadMoreNews() {
+            const button = event.target;
+            const originalText = button.textContent;
+            
+            button.textContent = 'Loading...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.disabled = false;
+                alert('📰 More articles loaded!\n\n• 6 new articles added\n• Updated market reports\n• Latest policy announcements\n• Fresh research findings\n\nScroll up to see the new content!');
+            }, 2000);
+        }
+
+        function viewDetailedWeather() {
+            alert('🌦️ 7-Day Weather Forecast\n\n📅 Today: 28°C, Partly Cloudy, 2mm rain\n📅 Tomorrow: 30°C, Sunny, 0mm rain\n📅 Day 3: 26°C, Thunderstorms, 15mm rain\n📅 Day 4: 24°C, Heavy Rain, 35mm rain\n📅 Day 5: 25°C, Cloudy, 5mm rain\n📅 Day 6: 29°C, Partly Cloudy, 0mm rain\n📅 Day 7: 31°C, Sunny, 0mm rain\n\n⚠️ Weather Alert: Heavy rainfall expected on Day 4. Farmers advised to:\n• Postpone harvesting activities\n• Ensure proper drainage in fields\n• Protect stored crops from moisture');
+        }
+
+        function subscribeNewsletter() {
+            const email = event.target.previousElementSibling.value;
+            if (email && email.includes('@')) {
+                alert(`📧 Newsletter Subscription Successful!\n\nWelcome to AgriConnect Daily Newsletter!\n\n✅ Subscribed: ${email}\n\n📬 You'll receive:\n• Daily market price updates\n• Weather alerts and forecasts\n• Latest government policy news\n• Technology and research updates\n• Expert farming tips\n\nFirst newsletter will arrive tomorrow at 6:00 AM!`);
+                event.target.previousElementSibling.value = '';
+            } else {
+                alert('❌ Please enter a valid email address to subscribe to our newsletter.');
+            }
+        }
+
+        function viewMarketPrices() {
+            alert('📈 Today\'s Market Prices (₹/Quintal)\n\n🌾 Cereals:\n• Wheat: ₹2,125 (↑₹25)\n• Rice: ₹3,200 (↓₹50)\n• Maize: ₹1,850 (↑₹15)\n\n🫘 Pulses:\n• Arhar: ₹6,800 (↑₹100)\n• Moong: ₹7,200 (↑₹150)\n• Chana: ₹5,400 (↓₹75)\n\n🥬 Vegetables:\n• Tomato: ₹4,500 (↑₹800)\n• Onion: ₹2,200 (↑₹200)\n• Potato: ₹1,800 (↓₹100)\n\n📊 Market Trend: Mixed with vegetables showing volatility due to weather conditions.');
+        }
+
+        function viewWeatherForecast() {
+            alert('🌦️ Extended Weather Forecast\n\n🌍 National Overview:\n• Northwest: Normal temperatures, scattered showers\n• Central: Above normal temperatures, dry conditions\n• South: Below normal temperatures, good rainfall\n• East: Normal conditions, moderate humidity\n\n⚠️ Alerts:\n• Heat wave warning for Rajasthan, Gujarat\n• Heavy rainfall alert for Kerala, Karnataka\n• Thunderstorm warning for UP, Bihar\n\n🌱 Farming Advisory:\n• Postpone sowing in heat wave areas\n• Ensure drainage in high rainfall zones\n• Monitor crop health in humid conditions');
+        }
+
+        function viewGovSchemes() {
+            alert('🏛️ Latest Government Schemes\n\n💰 Financial Support:\n• PM-KISAN: ₹6,000 annual direct benefit\n• Crop Insurance: Premium subsidy up to 90%\n• KCC: Credit up to ₹3 lakh at 4% interest\n\n🌱 Technology & Training:\n• Soil Health Cards: Free soil testing\n• Digital Agriculture: AI-powered advisory\n• FPO Support: ₹18 lakh per organization\n\n🚰 Infrastructure:\n• Micro Irrigation: 55% subsidy\n• Cold Storage: 35% capital subsidy\n• Rural Roads: Connectivity to all villages\n\nClick on Government Schemes section for detailed information and application process.');
+        }
+
+        function viewExpertAdvice() {
+            alert('👨‍🌾 Expert Farming Advice\n\n🌾 Crop Management:\n• Monitor for pest attacks during humid weather\n• Apply balanced fertilizers based on soil test\n• Ensure proper spacing for better yields\n\n💧 Water Management:\n• Use drip irrigation to save 40% water\n• Harvest rainwater for dry season use\n• Monitor soil moisture regularly\n\n🌱 Sustainable Practices:\n• Adopt crop rotation to maintain soil health\n• Use organic manures to improve fertility\n• Practice integrated pest management\n\n📞 Expert Helpline: 1800-180-1551\n💬 WhatsApp Advisory: +91 98765 43210');
+        }
+
+        // Initialize page animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.news-card, .bg-white\\/70');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-fade-in');
+                }, index * 100);
+            });
+
+            // Auto-refresh news count every 30 seconds
+            setInterval(() => {
+                const currentCount = parseInt(document.getElementById('newsCount').textContent);
+                if (Math.random() > 0.7) { // 30% chance of new article
+                    document.getElementById('newsCount').textContent = currentCount + 1;
+                }
+            }, 30000);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'981ae688c504c66c',t:'MTc1ODMwMzk2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
